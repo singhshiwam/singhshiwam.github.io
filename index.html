@@ -711,6 +711,29 @@ a{color:inherit;text-decoration:none}
 </head>
 <body>
 
+<script>
+/* Deterrent only: blocks right-click, F12, Ctrl+U / Ctrl+S / Ctrl+P and the
+   devtools shortcuts. It does not prevent a determined visitor from reading
+   the source. */
+(function(){
+"use strict";
+function block(e){ e.preventDefault(); e.stopPropagation(); return false; }
+
+document.addEventListener('contextmenu', block, true);
+document.addEventListener('dragstart', block, true);
+
+document.addEventListener('keydown', function(e){
+  var k = (e.key || '').toLowerCase();
+  var mod = e.ctrlKey || e.metaKey;
+
+  if(k === 'f12') return block(e);                                   // devtools
+  if(mod && e.shiftKey && ['i','j','c','k','e'].indexOf(k) > -1) return block(e); // devtools, console, inspector
+  if(mod && ['u','s','p'].indexOf(k) > -1) return block(e);          // view source, save, print
+  if(e.key === 'F12') return block(e);
+}, true);
+})();
+</script>
+
 <svg style="display:none" aria-hidden="true">
   <symbol id="i-cap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 9L12 4 2 9l10 5 10-5z"/><path d="M6 11.5V16c0 1.3 2.7 2.5 6 2.5s6-1.2 6-2.5v-4.5"/></symbol>
   <symbol id="i-case" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M2 13h20"/></symbol>
