@@ -72,6 +72,9 @@
   --mono:'IBM Plex Mono',ui-monospace,monospace;
   --ease:cubic-bezier(.66,0,.2,1);
   --ease-out:cubic-bezier(.16,1,.3,1);
+  /* accent used by cards; was referenced but never defined, which left card backgrounds transparent */
+  --a-rgb:22 104 208;
+  --accent:#1668d0;
 }
 
 *{margin:0;padding:0;box-sizing:border-box}
@@ -686,9 +689,9 @@ body.theme-light-3 {
   --faint: #6b9a90;
 }
 body.theme-dark-1 {
-  --ink: #0f1729;
-  --ink-2: #1a2540;
-  --ink-3: #141e33;
+  --ink: #161923;
+  --ink-2: #1d2130;
+  --ink-3: #191c28;
   --wash: rgba(100,160,255,.06);
   --wash-2: rgba(100,160,255,.12);
   --line: rgba(100,160,255,.15);
@@ -894,6 +897,131 @@ body.theme-dark-4 .sky {
 }
 
 /* ================================================================
+   GALAXY LAYER
+================================================================ */
+#galaxy{
+  position:fixed;inset:0;z-index:1;pointer-events:none;
+  opacity:.62;transition:opacity .8s ease;
+}
+body[class*="theme-dark"] #galaxy{opacity:1}
+
+/* dark themes: clean deep-space backdrop, the galaxy is the light source */
+body[class*="theme-dark"] .sky{opacity:.12}
+body[class*="theme-dark"] .halo{opacity:.1}
+body[class*="theme-dark"] .grid-dots{opacity:.08;animation:none}
+body[class*="theme-dark"] .ring{opacity:.35}
+body[class*="theme-dark"] .poly{opacity:.18}
+body[class*="theme-dark"] .ridge{opacity:.25}
+body[class*="theme-dark"] #flow{opacity:.35}
+
+/* ================================================================
+   READABILITY OVER THE GALAXY
+   Light themes: soft white halo behind text, more opaque surfaces.
+   Dark themes: light text, dark halo, dark surfaces, brighter blues.
+================================================================ */
+
+/* ---- light themes ---- */
+.hero{position:relative;isolation:isolate}
+.hero::before{
+  content:"";position:absolute;inset:-36px -48px;z-index:-1;pointer-events:none;
+  background:radial-gradient(ellipse at 42% 50%, rgba(247,251,255,.82) 0%, rgba(247,251,255,.55) 48%, rgba(247,251,255,0) 74%);
+  filter:blur(8px);
+}
+.hero .name{
+  filter:drop-shadow(0 0 16px rgba(255,255,255,.85)) drop-shadow(0 6px 22px rgba(22,104,208,.20));
+}
+.phead h2,.phead .lede,.phead .stamp,
+.hero-kicker,.hero .tagline,.hero .role,.hero p.intro,
+.stat .n,.stat .l,.closing{
+  text-shadow:0 0 14px rgba(247,251,255,.95),0 0 3px rgba(247,251,255,.9);
+}
+.hero p.intro{color:#1d3a54}
+.hero .tagline{color:#1f3f5a}
+.hero .role{color:#2f4d68}
+.stat .l{color:#4a6883}
+
+.conf,.wk{
+  background:linear-gradient(168deg, rgb(var(--a-rgb)/.12), rgba(255,255,255,.9));
+}
+.conf:hover,.wk:hover{
+  background:linear-gradient(168deg, rgb(var(--a-rgb)/.2), rgba(255,255,255,.95));
+}
+.reach a,.reach div.ln{background:rgba(255,255,255,.86)}
+.reach a:hover{background:linear-gradient(90deg, rgba(22,104,208,.14), rgba(255,255,255,.95))}
+
+/* ---- dark themes ---- */
+body[class*="theme-dark"]{
+  --blue:#6aa8ff;
+  --blue-2:#9cc4ff;
+  --a-rgb:90 140 255;
+  --accent:#6aa8ff;
+  --paper:#1a2540;
+}
+body[class*="theme-dark"] .hero::before{
+  background:radial-gradient(ellipse at 42% 50%, rgba(8,12,26,.78) 0%, rgba(8,12,26,.5) 48%, rgba(8,12,26,0) 74%);
+}
+body[class*="theme-dark"] .hero .name{
+  background-image:linear-gradient(100deg,
+    #e6f0ff 0%, #5eead4 14%, #38bdf8 30%, #818cf8 48%,
+    #c084fc 66%, #f472b6 84%, #e6f0ff 100%);
+  filter:drop-shadow(0 0 16px rgba(6,10,24,.9)) drop-shadow(0 6px 22px rgba(100,160,255,.35));
+}
+body[class*="theme-dark"] .phead h2,
+body[class*="theme-dark"] .phead .lede,
+body[class*="theme-dark"] .phead .stamp,
+body[class*="theme-dark"] .hero-kicker,
+body[class*="theme-dark"] .hero .tagline,
+body[class*="theme-dark"] .hero .role,
+body[class*="theme-dark"] .hero p.intro,
+body[class*="theme-dark"] .stat .n,
+body[class*="theme-dark"] .stat .l,
+body[class*="theme-dark"] .closing{
+  text-shadow:0 0 14px rgba(6,10,24,.95),0 0 3px rgba(6,10,24,.9);
+}
+body[class*="theme-dark"] .phead h2{color:#eef4ff}
+body[class*="theme-dark"] .phead .lede{color:#b9cce3}
+body[class*="theme-dark"] .hero p.intro{color:#c9d8ea}
+body[class*="theme-dark"] .hero .tagline{color:#b3c8e2}
+body[class*="theme-dark"] .hero .role{color:#a3b9d4}
+body[class*="theme-dark"] .stat .l{color:#9fb4cc}
+body[class*="theme-dark"] .stat:nth-child(1) .n{color:#5eead4 !important}
+body[class*="theme-dark"] .stat:nth-child(2) .n{color:#a5b4fc !important}
+body[class*="theme-dark"] .stat:nth-child(3) .n{color:#f9a8d4 !important}
+
+body[class*="theme-dark"] .card p{color:#bccde0 !important}
+body[class*="theme-dark"] .card h3{color:#e6eefa}
+body[class*="theme-dark"] .item .what{color:#e0eaf6}
+body[class*="theme-dark"] .item .note{color:#a9bdd3}
+
+body[class*="theme-dark"] .pub,
+body[class*="theme-dark"] .conf,
+body[class*="theme-dark"] .wk,
+body[class*="theme-dark"] .award,
+body[class*="theme-dark"] .reach a,
+body[class*="theme-dark"] .reach div.ln,
+body[class*="theme-dark"] .card{
+  background:linear-gradient(168deg, rgba(36,50,86,.95), rgba(17,21,33,.96));
+}
+body[class*="theme-dark"] .conf:hover,
+body[class*="theme-dark"] .wk:hover,
+body[class*="theme-dark"] .reach a:hover{
+  background:linear-gradient(168deg, rgba(46,66,112,.97), rgba(20,26,42,.97));
+}
+body[class*="theme-dark"] .pub .ti,
+body[class*="theme-dark"] .conf .ti,
+body[class*="theme-dark"] .wk .ti{color:#e0eaf6}
+body[class*="theme-dark"] .pub .au,
+body[class*="theme-dark"] .conf .au,
+body[class*="theme-dark"] .wk .ho{color:#a9bdd3}
+body[class*="theme-dark"] .pub .au b{color:#ffffff}
+body[class*="theme-dark"] .award .by{color:#bccde0}
+body[class*="theme-dark"] .closing{color:#e6eefa}
+body[class*="theme-dark"] .closing b{color:#7cb4ff}
+body[class*="theme-dark"] .reach .v{color:#e6eefa}
+body[class*="theme-dark"] .tag{color:#b3c6dc}
+body[class*="theme-dark"] .sounding svg text{fill:#a9bdd3}
+
+/* ================================================================
    RESPONSIVE
 ================================================================ */
 @media (max-width:1000px), (max-height:520px){
@@ -927,6 +1055,9 @@ body.theme-dark-4 .sky {
   .theme-switch { top: 12px; right: 12px; }
   .theme-btn { width: 36px; height: 36px; }
   .theme-btn svg { width: 16px; height: 16px; }
+  /* galaxy is fainter on small screens because text scrolls straight over it */
+  #galaxy{opacity:.4}
+  body[class*="theme-dark"] #galaxy{opacity:.7}
 }
 @media (max-width:620px){
   .c2,.c3,.c4{grid-template-columns:1fr}
@@ -942,7 +1073,7 @@ body.theme-dark-4 .sky {
 }
 </style>
 </head>
-<body>
+<body class="theme-dark-1">
 
 <script>
 /* Deterrent only: blocks right-click, F12, Ctrl+U / Ctrl+S / Ctrl+P and the
@@ -991,11 +1122,11 @@ document.addEventListener('keydown', function(e){
 <!-- ============ THEME SWITCHER — TOP RIGHT ============ -->
 <div class="theme-switch" id="themeSwitch">
   <div class="theme-dots" id="themeDots">
-    <span data-theme="original" style="background: linear-gradient(135deg,#00cdb9,#008eff,#a23aff);" class="active" title="Original blue"></span>
+    <span data-theme="original" style="background: linear-gradient(135deg,#00cdb9,#008eff,#a23aff);" title="Original blue"></span>
     <span data-theme="light-1" style="background: #f8faff;" title="Light blue"></span>
     <span data-theme="light-2" style="background: #fefcf8;" title="Warm light"></span>
     <span data-theme="light-3" style="background: #f7fdfc;" title="Mint light"></span>
-    <span data-theme="dark-1" style="background: #0f1729;" title="Dark navy"></span>
+    <span data-theme="dark-1" style="background: #161923;" class="active" title="Deep space"></span>
     <span data-theme="dark-2" style="background: #1a1428;" title="Dark purple"></span>
     <span data-theme="dark-3" style="background: #0d1a1f;" title="Dark teal"></span>
     <span data-theme="dark-4" style="background: #1f1a12;" title="Dark warm"></span>
@@ -1045,6 +1176,9 @@ document.addEventListener('keydown', function(e){
     <circle cx="55" cy="55" r="6" fill="rgba(255,38,148,.42)"/>
   </svg>
 </div>
+
+<!-- rotating spiral galaxy -->
+<canvas id="galaxy" aria-hidden="true"></canvas>
 
 <div class="glow g1" id="g1"></div>
 <div class="glow g2" id="g2"></div>
@@ -1796,7 +1930,7 @@ document.addEventListener('keydown', function(e){
     dark4: document.querySelector('[data-theme="dark-4"]')
   };
   var dots = document.querySelectorAll('.theme-dots span');
-  var currentTheme = 'original';
+  var currentTheme = 'dark-1';
   var lightIndex = 0, darkIndex = 0;
 
   function applyTheme(theme) {
@@ -2084,6 +2218,370 @@ var used = false;
   }, {once:true, passive:true});
 });
 
+})();
+</script>
+
+<script>
+/* ================================================================
+   GALAXY BACKGROUND
+   Bright, bloomed spiral galaxy modelled on the GPT-6 Astra hero:
+   dense glowing arms, warm and cool tinted stars, a white core,
+   and stars that stream along the arms so the shape keeps morphing
+   while the whole disc turns. Time-based and paused when hidden.
+================================================================ */
+(function () {
+  "use strict";
+
+  var CFG = {
+    starsDesktop: 4800,   // arm + bulge stars
+    starsMobile: 2400,
+    knots: 70,            // bright glowing clumps along the arms
+    dustStars: 320,       // tiny field stars across the screen
+    arms: 2,
+    pitch: 2.7,           // log-spiral winding
+    spin: -0.07,          // whole-disc rotation, rad/s
+    flow: 0.009,          // how fast stars stream along the arms (radius units / s)
+    sizeDesktop: 0.6,     // galaxy radius vs min(stage width, height)
+    sizeMobile: 0.6,
+    tilt: 0.9,            // 1 = face-on
+    parallax: true
+  };
+
+  var cv = document.getElementById("galaxy");
+  if (!cv || !cv.getContext) return;
+  var ctx = cv.getContext("2d", { alpha: true });
+  if (!ctx) return;
+
+  var reduceQ = window.matchMedia("(prefers-reduced-motion: reduce)");
+  var smallQ = window.matchMedia("(max-width:1000px), (max-height:520px)");
+
+  var W = 0, H = 0, dpr = 1, R = 0, cx = 0, cy = 0;
+  var stars = [], knots = [], dust = [], dark = true;
+  var dots = [], spikes = [], glow = null, dustSpr = null;
+  var running = true, last = 0, T = 0, rafId = 0;
+  var stride = 1, probeN = 0, probeT = 0;   // adaptive quality for slower machines
+  var mx = 0, my = 0, px = 0, py = 0;
+  var RMIN = 0.05, RMAX = 1.04;
+
+  /* star colours: mostly white, some warm peach/amber, a few blue */
+  var PAL_DARK  = ["255,255,255", "228,236,255", "255,220,190", "255,184,140", "176,204,255"];
+  var PAL_LIGHT = ["14,36,104", "24,64,160", "84,48,168", "16,102,150", "52,94,206"];
+  var WEIGHTS   = [0.5, 0.2, 0.14, 0.08, 0.08];
+
+  function pickColour() {
+    var x = Math.random(), acc = 0;
+    for (var i = 0; i < WEIGHTS.length; i++) { acc += WEIGHTS[i]; if (x < acc) return i; }
+    return 0;
+  }
+
+  function gauss() {
+    var u = 0, v = 0;
+    while (!u) u = Math.random();
+    while (!v) v = Math.random();
+    return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+  }
+
+  /* sprite with a hot core and a wide bloom */
+  function dotSprite(size, rgb) {
+    var c = document.createElement("canvas");
+    c.width = c.height = size;
+    var g = c.getContext("2d"), h = size / 2;
+    var gr = g.createRadialGradient(h, h, 0, h, h, h);
+    gr.addColorStop(0, "rgba(255,255,255,1)");
+    gr.addColorStop(0.08, "rgba(" + rgb + ",1)");
+    gr.addColorStop(0.2, "rgba(" + rgb + ",.55)");
+    gr.addColorStop(0.45, "rgba(" + rgb + ",.14)");
+    gr.addColorStop(1, "rgba(" + rgb + ",0)");
+    if (!dark) {
+      gr = g.createRadialGradient(h, h, 0, h, h, h);
+      gr.addColorStop(0, "rgba(" + rgb + ",1)");
+      gr.addColorStop(0.2, "rgba(" + rgb + ",.7)");
+      gr.addColorStop(0.45, "rgba(" + rgb + ",.16)");
+      gr.addColorStop(1, "rgba(" + rgb + ",0)");
+    }
+    g.fillStyle = gr;
+    g.fillRect(0, 0, size, size);
+    return c;
+  }
+
+  function spikeSprite(size, rgb) {
+    var c = dotSprite(size, rgb), g = c.getContext("2d"), h = size / 2;
+    var lw = Math.max(1, size / 70);
+    var core = dark ? "255,255,255" : rgb;
+    [[0, h, size, h], [h, 0, h, size]].forEach(function (L, k) {
+      var lg = g.createLinearGradient(L[0], L[1], L[2], L[3]);
+      lg.addColorStop(0, "rgba(" + rgb + ",0)");
+      lg.addColorStop(0.5, "rgba(" + core + ",.9)");
+      lg.addColorStop(1, "rgba(" + rgb + ",0)");
+      g.fillStyle = lg;
+      if (k === 0) g.fillRect(0, h - lw / 2, size, lw);
+      else g.fillRect(h - lw / 2, 0, lw, size);
+    });
+    return c;
+  }
+
+  function glowSprite(size, rgb) {
+    var c = document.createElement("canvas");
+    c.width = c.height = size;
+    var g = c.getContext("2d"), h = size / 2;
+    var gr = g.createRadialGradient(h, h, 0, h, h, h);
+    gr.addColorStop(0, "rgba(" + rgb + ",.55)");
+    gr.addColorStop(0.35, "rgba(" + rgb + ",.18)");
+    gr.addColorStop(1, "rgba(" + rgb + ",0)");
+    g.fillStyle = gr;
+    g.fillRect(0, 0, size, size);
+    return c;
+  }
+
+  function applyTheme() {
+    dark = /\btheme-dark/.test(document.body.className);
+    var pal = dark ? PAL_DARK : PAL_LIGHT;
+    dots = pal.map(function (rgb) { return dotSprite(64, rgb); });
+    spikes = pal.map(function (rgb) { return spikeSprite(128, rgb); });
+    glow = glowSprite(128, dark ? "235,238,255" : "40,90,200");
+    dustSpr = dotSprite(16, dark ? "255,255,255" : "30,60,140");
+    if (reduceQ.matches) draw();
+  }
+
+  function armAngle(arm, r) {
+    return arm * (2 * Math.PI / CFG.arms) + CFG.pitch * Math.log(Math.max(r, RMIN) / RMIN);
+  }
+
+  function build() {
+    var n = smallQ.matches ? CFG.starsMobile : CFG.starsDesktop;
+
+    knots = [];
+    for (var k = 0; k < CFG.knots; k++) {
+      knots.push({
+        arm: k % CFG.arms,
+        r0: RMIN + (RMAX - RMIN) * Math.pow(Math.random(), 0.8),
+        off: gauss() * 0.1,
+        v: CFG.flow * (0.6 + Math.random() * 0.8),
+        g: 0.5 + Math.random() * 0.9       // glow size
+      });
+    }
+
+    stars = [];
+    for (var i = 0; i < n; i++) {
+      var q = Math.random(), st = {};
+      if (q < 0.12) {                      // bulge: fast inner swirl
+        st.t = 0;
+        st.r = Math.abs(gauss()) * 0.15 + 0.005;
+        st.dim = 0.5;
+        st.th = Math.random() * 2 * Math.PI;
+        st.w = 0.12 + 0.1 * Math.random();
+      } else if (q < 0.5) {               // members of a bright knot
+        st.t = 1;
+        st.k = (Math.random() * knots.length) | 0;
+        st.dr = gauss() * 0.022;
+        st.dt = gauss() * 0.06;
+      } else {                             // stars spread along the arms
+        st.t = 2;
+        st.arm = (Math.random() * CFG.arms) | 0;
+        st.r0 = RMIN + (RMAX - RMIN) * Math.pow(Math.random(), 0.9);
+        st.off = gauss() * 0.2;
+        st.dr = gauss() * 0.03;
+        st.v = CFG.flow * (0.5 + Math.random());
+      }
+      var bright = Math.random() < 0.06;
+      st.c = pickColour();
+      st.b = bright;
+      st.s = bright ? 3 + Math.random() * 3.2 : 0.7 + Math.pow(Math.random(), 1.8) * 2.2;
+      st.a = (0.55 + 0.45 * Math.random()) * (st.dim || 1);
+      st.tf = 0.8 + Math.random() * 2.4;
+      st.tp = Math.random() * 6.283;
+      stars.push(st);
+    }
+
+    dust = [];
+    for (var d = 0; d < CFG.dustStars; d++) {
+      dust.push({
+        x: Math.random(), y: Math.random(),
+        s: 0.8 + Math.random() * 1.8, a: 0.2 + Math.random() * 0.6,
+        tf: 0.4 + Math.random() * 1.6, tp: Math.random() * 6.283
+      });
+    }
+  }
+
+  /* position along the arm, streaming outward and wrapping, with a fade at both ends */
+  function flowR(r0, v) {
+    var span = RMAX - RMIN;
+    return RMIN + ((r0 - RMIN + v * T) % span + span) % span;
+  }
+  function edgeFade(r) {
+    var a = Math.min(1, (r - RMIN) / 0.06), b = Math.min(1, (RMAX - r) / 0.12);
+    return Math.max(0, Math.min(a, b));
+  }
+
+  function size() {
+    dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+    W = window.innerWidth;
+    H = window.innerHeight;
+    cv.width = Math.floor(W * dpr);
+    cv.height = Math.floor(H * dpr);
+    cv.style.width = W + "px";
+    cv.style.height = H + "px";
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    var rail = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--rail")) || 0;
+    if (smallQ.matches) rail = 0;
+    var sw = W - rail;
+    R = Math.min(sw, H) * (smallQ.matches ? CFG.sizeMobile : CFG.sizeDesktop);
+    cx = rail + sw * 0.5;
+    cy = H * 0.52;
+  }
+
+  function draw() {
+    ctx.globalCompositeOperation = "source-over";
+    ctx.globalAlpha = 1;
+    ctx.clearRect(0, 0, W, H);
+
+    px += (mx - px) * 0.04;
+    py += (my - py) * 0.04;
+
+    var rot = T * CFG.spin;
+    var tilt = CFG.tilt + 0.04 * Math.sin(T * 0.13);
+    var yaw = -0.3 + 0.05 * Math.sin(T * 0.08);
+    var cY = Math.cos(yaw), sY = Math.sin(yaw);
+    var ox = cx + px * 20, oy = cy + py * 14;
+
+    function project(r, th) {
+      var x = Math.cos(th) * r * R, y = Math.sin(th) * r * R * tilt;
+      return [ox + x * cY - y * sY, oy + x * sY + y * cY];
+    }
+
+    ctx.globalCompositeOperation = dark ? "lighter" : "source-over";
+
+    // field stars
+    for (var j = 0; j < dust.length; j++) {
+      var u = dust[j];
+      ctx.globalAlpha = u.a * (0.5 + 0.5 * Math.sin(T * u.tf + u.tp)) * (dark ? 1 : 0.35);
+      var ds = u.s * 3;
+      ctx.drawImage(dustSpr, u.x * W - px * 6 - ds / 2, u.y * H - py * 4 - ds / 2, ds, ds);
+    }
+
+    // core bloom
+    ctx.save();
+    ctx.translate(ox, oy);
+    ctx.rotate(yaw);
+    ctx.scale(1, tilt);
+    var pulse = 1 + 0.035 * Math.sin(T * 0.7);
+    var cr = R * 0.44 * pulse;
+    var cg = ctx.createRadialGradient(0, 0, 0, 0, 0, cr);
+    if (dark) {
+      cg.addColorStop(0, "rgba(255,255,255,.9)");
+      cg.addColorStop(0.1, "rgba(255,250,242,.6)");
+      cg.addColorStop(0.3, "rgba(232,236,255,.26)");
+      cg.addColorStop(0.6, "rgba(210,220,255,.07)");
+      cg.addColorStop(1, "rgba(200,210,255,0)");
+    } else {
+      cg.addColorStop(0, "rgba(30,70,180,.45)");
+      cg.addColorStop(0.3, "rgba(50,100,210,.14)");
+      cg.addColorStop(1, "rgba(50,100,210,0)");
+    }
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = cg;
+    ctx.beginPath();
+    ctx.arc(0, 0, cr, 0, 6.2832);
+    ctx.fill();
+    ctx.restore();
+
+    // knot positions this frame + their glow
+    var kp = new Array(knots.length);
+    for (var k = 0; k < knots.length; k++) {
+      var kn = knots[k];
+      var kr = flowR(kn.r0, kn.v);
+      var kth = armAngle(kn.arm, kr) + kn.off + rot;
+      kp[k] = { r: kr, th: kth, f: edgeFade(kr) };
+      var P = project(kr, kth);
+      var gs = R * 0.13 * kn.g * (0.6 + 0.4 * (1 - kr));
+      ctx.globalAlpha = (dark ? 0.55 : 0.3) * kp[k].f;
+      ctx.drawImage(glow, P[0] - gs / 2, P[1] - gs / 2, gs, gs);
+    }
+
+    // stars
+    var boost = stride > 1 ? 1.35 : 1;
+    for (var i = 0; i < stars.length; i += stride) {
+      var s = stars[i], r, th, fade = 1;
+      if (s.t === 0) {
+        r = s.r;
+        th = s.th + T * s.w + rot;
+      } else if (s.t === 1) {
+        var K = kp[s.k];
+        r = Math.abs(K.r + s.dr);
+        th = K.th + s.dt / Math.max(K.r, 0.12);
+        fade = K.f;
+      } else {
+        var fr = flowR(s.r0, s.v);
+        r = Math.abs(fr + s.dr);
+        th = armAngle(s.arm, fr) + s.off * (1 + 0.6 * fr) + rot;
+        fade = edgeFade(fr);
+      }
+      if (fade <= 0.01) continue;
+      var P2 = project(r, th);
+      ctx.globalAlpha = Math.min(1, s.a * boost) * fade * (0.62 + 0.38 * Math.sin(T * s.tf + s.tp));
+      var d;
+      if (s.b) {
+        d = s.s * 10;
+        ctx.drawImage(spikes[s.c], P2[0] - d / 2, P2[1] - d / 2, d, d);
+      } else {
+        d = s.s * 7;
+        ctx.drawImage(dots[s.c], P2[0] - d / 2, P2[1] - d / 2, d, d);
+      }
+    }
+
+    ctx.globalAlpha = 1;
+    ctx.globalCompositeOperation = "source-over";
+  }
+
+  function frame(now) {
+    if (!running) return;
+    var dt = last ? Math.min(0.05, (now - last) / 1000) : 0.016;
+    last = now;
+    T += dt;
+    if (probeN < 120) {                      // after warm-up, halve the star count if frames are slow
+      probeN++;
+      if (probeN > 30) probeT += dt;
+      if (probeN === 120 && probeT / 90 > 1 / 42) stride = 2;
+    }
+    draw();
+    rafId = requestAnimationFrame(frame);
+  }
+
+  function start() {
+    cancelAnimationFrame(rafId);
+    if (reduceQ.matches) { T = 20; draw(); return; }
+    running = true;
+    last = 0;
+    rafId = requestAnimationFrame(frame);
+  }
+
+  var grt;
+  window.addEventListener("resize", function () {
+    clearTimeout(grt);
+    grt = setTimeout(function () { size(); if (reduceQ.matches) draw(); }, 150);
+  });
+
+  if (CFG.parallax) {
+    window.addEventListener("pointermove", function (e) {
+      mx = e.clientX / (W || 1) - 0.5;
+      my = e.clientY / (H || 1) - 0.5;
+    }, { passive: true });
+  }
+
+  document.addEventListener("visibilitychange", function () {
+    if (document.hidden) { running = false; cancelAnimationFrame(rafId); }
+    else start();
+  });
+
+  new MutationObserver(applyTheme).observe(document.body, {
+    attributes: true, attributeFilter: ["class"]
+  });
+
+  T = 20;          // start mid-flow so arms are fully populated on load
+  size();
+  build();
+  applyTheme();
+  start();
 })();
 </script>
 </body>
