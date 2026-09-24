@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Shiwam Singh · Boundary Layer Meteorology · IIT Roorkee</title>
 <meta name="description" content="Shiwam Singh, PhD researcher at IIT Roorkee, works on surface layer parameterization in numerical weather prediction models over mountainous terrain. EGU 2026 Early Career Scientist travel awardee.">
 <meta name="keywords" content="Shiwam Singh, IIT Roorkee, boundary layer meteorology, surface layer parameterization, WRF model, Monin-Obukhov similarity theory, numerical weather prediction, mountain meteorology, eddy covariance, EGU, AGU, GEWEX">
@@ -900,9 +900,12 @@ body.theme-dark-4 .sky {
    GALAXY LAYER
 ================================================================ */
 #galaxy{
-  position:fixed;inset:0;z-index:1;pointer-events:none;
+  position:fixed;left:0;top:0;z-index:1;pointer-events:none;
+  width:100vw;height:100vh;height:100lvh;
   opacity:.62;transition:opacity .8s ease;
 }
+/* dark page colour behind everything, so overscroll and browser bars never show white */
+html:has(body[class*="theme-dark"]){background:#161923}
 body[class*="theme-dark"] #galaxy{opacity:1}
 
 /* dark themes: clean deep-space backdrop, the galaxy is the light source */
@@ -1056,8 +1059,36 @@ body[class*="theme-dark"] .sounding svg text{fill:#a9bdd3}
   .theme-btn { width: 36px; height: 36px; }
   .theme-btn svg { width: 16px; height: 16px; }
   /* galaxy is fainter on small screens because text scrolls straight over it */
-  #galaxy{opacity:.4}
-  body[class*="theme-dark"] #galaxy{opacity:.7}
+  #galaxy{opacity:.45}
+  body[class*="theme-dark"] #galaxy{opacity:.8}
+}
+/* phone fixes: the nav row was stretching the page to ~1450px wide,
+   which made phones zoom the whole site out instead of filling the screen */
+@media (max-width:1000px), (max-height:520px){
+  html,body{max-width:100%;overflow-x:hidden}
+  .rail{max-width:100vw}
+  .ridge{width:100%}   /* the svg was sizing itself from its aspect ratio, ~1400px wide */
+  .axis{min-width:0}
+  .nav{min-width:0;max-width:100%}
+  .phead{flex-wrap:wrap;gap:8px 20px}
+  .phead .stamp{white-space:normal}
+  .hero::before{inset:-24px -8px}
+  /* theme switcher floats bottom-right so it no longer covers the name and nav */
+  .theme-switch{
+    gap:6px;top:auto!important;bottom:calc(14px + env(safe-area-inset-bottom,0px));right:12px!important;
+    padding:6px 8px;border-radius:999px;
+    background:rgba(18,22,34,.72);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+    border:1px solid rgba(255,255,255,.12);
+  }
+  body:not([class*="theme-dark"]) .theme-switch{background:rgba(255,255,255,.8);border-color:var(--line-2)}
+  .rail{padding-top:calc(12px + env(safe-area-inset-top,0px))}
+  .panel{scroll-margin-top:84px}
+  body[class*="theme-dark"] .hero .tagline,
+  body[class*="theme-dark"] .hero .role,
+  body[class*="theme-dark"] .hero p.intro,
+  body[class*="theme-dark"] .phead .lede{
+    text-shadow:0 0 10px rgba(6,10,24,1),0 0 4px rgba(6,10,24,1),0 1px 2px rgba(0,0,0,.9);
+  }
 }
 @media (max-width:620px){
   .c2,.c3,.c4{grid-template-columns:1fr}
@@ -2242,7 +2273,7 @@ var used = false;
     spin: -0.07,          // whole-disc rotation, rad/s
     flow: 0.009,          // how fast stars stream along the arms (radius units / s)
     sizeDesktop: 0.6,     // galaxy radius vs min(stage width, height)
-    sizeMobile: 0.6,
+    sizeMobile: 0.47,
     tilt: 0.9,            // 1 = face-on
     parallax: true
   };
@@ -2415,19 +2446,24 @@ var used = false;
 
   function size() {
     dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-    W = window.innerWidth;
-    H = window.innerHeight;
+    W = cv.clientWidth || window.innerWidth;     // canvas box = full large viewport
+    H = cv.clientHeight || window.innerHeight;
     cv.width = Math.floor(W * dpr);
     cv.height = Math.floor(H * dpr);
-    cv.style.width = W + "px";
-    cv.style.height = H + "px";
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     var rail = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--rail")) || 0;
     if (smallQ.matches) rail = 0;
     var sw = W - rail;
-    R = Math.min(sw, H) * (smallQ.matches ? CFG.sizeMobile : CFG.sizeDesktop);
-    cx = rail + sw * 0.5;
-    cy = H * 0.52;
+    if (smallQ.matches) {
+      // phones: size from the longer side so the galaxy fills the whole screen
+      R = Math.max(sw, H) * CFG.sizeMobile;
+      cx = sw * 0.5;
+      cy = H * 0.5;
+    } else {
+      R = Math.min(sw, H) * CFG.sizeDesktop;
+      cx = rail + sw * 0.5;
+      cy = H * 0.52;
+    }
   }
 
   function draw() {
@@ -2558,7 +2594,15 @@ var used = false;
   var grt;
   window.addEventListener("resize", function () {
     clearTimeout(grt);
-    grt = setTimeout(function () { size(); if (reduceQ.matches) draw(); }, 150);
+    grt = setTimeout(function () {
+      var wasSmall = stars.length === CFG.starsMobile;
+      size();
+      if (wasSmall !== smallQ.matches) build();
+      if (reduceQ.matches) draw();
+    }, 150);
+  });
+  window.addEventListener("orientationchange", function () {
+    setTimeout(function () { size(); if (reduceQ.matches) draw(); }, 300);
   });
 
   if (CFG.parallax) {
